@@ -14,12 +14,12 @@ public class Employee
         this.id = id;
     }
 
-    private class PointCard()
+    public class PointCard
     {
 
     }
 
-    private class SaleResult()
+    public class SaleResult
     {
 
     }

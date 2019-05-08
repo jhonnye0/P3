@@ -12,6 +12,9 @@ public class Main
     public static void main(String[] args)
     {
         Scanner input = new Scanner(System.in);
+
+        Employee[] List = new Employee[100];
+
         int quantity = 0;
         while(1 == 1)
         {

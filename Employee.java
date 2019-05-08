@@ -14,17 +14,6 @@ public class Employee
         this.id = id;
     }
 
-    public class PointCard
-    {
-
-    }
-
-    public class SaleResult
-    {
-
-    }
-
-
     public void setName(String name) {
         this.name = name;
     }

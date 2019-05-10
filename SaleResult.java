@@ -1,39 +1,15 @@
 public class SaleResult
 {
-    private int day;
-    private int month;
-    private int year;
-    private int price;
+    private float[] day = new float [31];
+    private int limit;
 
-    public void setDay(int day) {
-        this.day = day;
+    public void setDay(int day, float price) {
+        this.day[day] = price;
     }
 
-    public void setMonth(int month) {
-        this.month = month;
+    public void setLimit(int limit) {
+        this.limit = limit;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getMonth() {
-        return month;
-    }
+    public float getDay(int i) { return day[i]; }
 }

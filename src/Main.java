@@ -1,4 +1,3 @@
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.Scanner;
 
@@ -87,10 +86,6 @@ public class Main
         String attribute = input.nextLine();
 
         Employee newEmp = new Employee(name, address, type, attribute,false, id);
-
-        System.out.printf("\nSeu ID é : |%d|\n", id);
-        System.out.print("\nLembre-se o seu ID é muito importante para acessar suas informações guarde-o!!\n");
-        System.out.print("Empregado adcionado com sucesso.\n");
         return newEmp;
     }
 
@@ -133,8 +128,10 @@ public class Main
                                 "n - não\n");
                         if(input.nextLine() == "y")
                             list[id].setSyndicate(true);
-                            System.out.println("Registrado com sucesso.");
                             //ID DO SINDICATO
+                        System.out.printf("\nSeu ID na empresa é: |%d|\n", id);
+                        System.out.print("\nLembre-se o seu ID é muito importante para acessar suas informações guarde-o!!\n");
+                        System.out.println("\nRegistrado com sucesso.");
                     }
                     else
                         System.out.println("Sua empresa atingiu o limite máximo de empregados!\n\n");

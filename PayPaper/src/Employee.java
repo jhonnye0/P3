@@ -4,17 +4,22 @@ public class Employee
     private String address;
     private String type;
     private String attribute;
+    private int paymentMethod;
+    //1. correios
+    //2. maos
+    //3. conta
     private boolean syndicate;
     private float salary, extra;
     private int id;
 
-    public Employee(String name, String address, String type, String attribute, boolean syndicate, int id)
+    public Employee(String name, String address, String type, String attribute, int paymentMethod, boolean syndicate, int id)
     {
         this.name = name;
         this.address = address;
         this.attribute = attribute;
         this.type = type;
         this.syndicate = syndicate;
+        this.paymentMethod = paymentMethod;
         this.id = id;
     }
 
@@ -49,6 +54,30 @@ public class Employee
     }
 
     public void setSyndicate(boolean syndicate) { this.syndicate = syndicate; }
+
+    public void setSalary(float salary) {
+        this.salary = salary;
+    }
+
+    public float getSalary() {
+        return salary;
+    }
+
+    public void setExtra(float extra) {
+        this.extra = extra;
+    }
+
+    public float getExtra() {
+        return extra;
+    }
+
+    public void setPaymentMethod(int paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public int getPaymentMethod() {
+        return paymentMethod;
+    }
 
     public boolean isSyndicate() { return syndicate; }
 

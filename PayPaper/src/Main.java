@@ -29,7 +29,8 @@ public class Main
                     "1. Nome\n" +
                     "2. Endereço\n" +
                     "3. Tipo\n" +
-                    "4. Atributos:\n");
+                    "4. Atributos:\n" +
+                    "5. Método de pagamento\n");
 
             int operation = input.nextInt();
             String buffer = input.nextLine();
@@ -65,6 +66,14 @@ public class Main
                     list[id].setAttribute(input.nextLine());
                     System.out.println("Atualizado.\n");
                     break;
+                case 5:
+                    System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
+                            "1. Cheque pelos correios\n" +
+                            "2. Cheque em mãos\n" +
+                            "3. Depósito na conta bancária\n");
+                    list[id].setPaymentMethod(input.nextInt());
+                    System.out.println("Atualizado.\n");
+                    break;
                 default:
                     System.out.println("Digite novamente o número.");
                     break;
@@ -84,8 +93,13 @@ public class Main
         String type = input.nextLine();
         System.out.print("Atributos do empregado:\n");
         String attribute = input.nextLine();
+        System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
+                "1. Cheque pelos correios\n" +
+                "2. Cheque em mãos\n" +
+                "3. Depósito na conta bancária\n");
+        int pMethod = input.nextInt();
 
-        Employee newEmp = new Employee(name, address, type, attribute,false, id);
+        Employee newEmp = new Employee(name, address, type, attribute,pMethod,false, id);
         return newEmp;
     }
 

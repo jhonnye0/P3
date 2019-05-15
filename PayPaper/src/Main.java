@@ -23,7 +23,7 @@ public class Main
         Scanner input = new Scanner(System.in);
         while(1 == 1)
         {
-            System.out.println("Digite a qual informação que deseja atualizar:\n\n" +
+            System.out.println("Digite o número da informação a qual deseja atualizar:\n\n" +
                     "0. Retornar\n" +
                     "1. Nome\n" +
                     "2. Endereço\n" +
@@ -59,7 +59,7 @@ public class Main
                     if(list[id].getType() == 1) System.out.print("Horista\n");
                     else if(list[id].getType() == 2) System.out.print("Comissionado\n");
                     else System.out.print("Assalariado\n");
-                    System.out.println("Digite o novo tipo:\n" +
+                    System.out.println("Digite o número do tipo que deseja:\n" +
                             "1. Horista\n" +
                             "2. Comissionado\n" +
                             "3. Assalariado\n");
@@ -74,7 +74,7 @@ public class Main
                                 "n - não");
                         if(input.nextLine().intern() == "y")
                         {
-                            System.out.println("Qual dia deseja?\n" +
+                            System.out.println("Qual dia deseja?\n\n" +
                                     "1. domingo\n" +
                                     "2. segunda\n" +
                                     "3. terça\n" +
@@ -83,15 +83,41 @@ public class Main
                                     "6. sexta\n" +
                                     "7. sabado\n");
                             int day = input.nextInt();
+                            input.nextLine();
                             if(day > 0 && day < 8)
                                 list[id].setPaymentweekday(day);
+
+                            System.out.println("Seu pagamento é efetuado uma vez por semana.\n");
                         }
                     }
-                    else if(list[id].getType() == 1)
+                    else if(list[id].getType() == 2)
                     {
+                        System.out.println("Qual dia deseja?\n\n" +
+                                "1. domingo\n" +
+                                "2. segunda\n" +
+                                "3. terça\n" +
+                                "4. quarta\n" +
+                                "5. quinta\n" +
+                                "6. sexta\n" +
+                                "7. sabado\n");
+                        int day = input.nextInt();
+                        input.nextLine();
+                        if(day > 0 && day < 8)
+                            list[id].setPaymentweekday(day);
 
+                        System.out.println("Seu pagamento é efetuado uma vez a cada x semanas.\n");
+                        System.out.println("Digite o x que deseja:\n");
+                        list[id].setFrequence(input.nextInt());
+                        input.nextLine();
                     }
-
+                    else if(list[id].getType() == 3)
+                    {
+                        System.out.println("Seu pagamento é efetuado uma vez por mês.\n");
+                        System.out.println("Qual dia deseja?\n");
+                        list[id].setFrequence(input.nextInt());
+                        input.nextLine();
+                    }
+                    System.out.println("Atualizado.\n");
                     break;
                 case 5:
                     System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
@@ -107,6 +133,8 @@ public class Main
                             "n - não\n");
                     if(input.nextLine() == "y")
                         list[id].setSyndicate(true);
+                    else
+                        list[id].setSyndicate(false);
                     break;
                 default:
                     System.out.println("Digite novamente o número.");
@@ -146,8 +174,8 @@ public class Main
             paymentweekday = 6;
             System.out.println("Atributos default:\n" +
                     "Pagamento 1 vez por semana\n" +
-                    "Dia de pagamento na sexta-feira\n\n" +
-                    "Pode ser alterado futuramente..");
+                    "Dia de pagamento na sexta-feira.\n\n" +
+                    "Pode ser alterado futuramente..\n");
         }
         else if(type == 2)
         {
@@ -257,11 +285,13 @@ public class Main
                                 if (Syndicate[i] == 0) break;
                             }
                             list[id].setSynID(i);
-                            System.out.printf("Seu ID no sindicato é: |%d|\n", list[id].getSynID());
+                            System.out.printf("\nSeu ID no sindicato é: |%d|\n", list[id].getSynID());
                         }
+                        else
+                            list[id].setSyndicate(false);
 
                         System.out.printf("Seu ID na empresa é: |%d|\n", id);
-                        System.out.println("\nRegistrado com sucesso.\n");
+                        System.out.print("Registrado com sucesso.\n");
                         System.out.print("Lembre-se o seu ID é muito importante para acessar suas informações guarde-o!!\n");
                     }
                     else

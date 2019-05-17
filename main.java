@@ -234,7 +234,8 @@ public class Main
                     "3. Tipo\n" +
                     "4. Atributos\n" +
                     "5. Método de pagamento\n" +
-                    "6. Participar do sindicato\n");
+                    "6. Participar do sindicato" +
+                    "7. Salário\n");
 
             int operation = input.nextInt();
             input.nextLine();
@@ -339,7 +340,13 @@ public class Main
                         synd[id] = true;
                     else
                         synd[id] = false;
+                    System.out.println("Atualizado.\n");
                     break;
+                case 7:
+                    System.out.printf("Salário atual: %lf\n", salary[id]);
+                    System.out.print("Qual o novo salário?\n");
+                    salary[id] = input.nextDouble();
+                    System.out.println("Atualizado.\n");
                 default:
                     System.out.println("Digite novamente o número.");
                     break;

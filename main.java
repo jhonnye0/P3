@@ -95,6 +95,7 @@ public class Main
                     {
                         System.out.print("Insira a taxa de serviço:\n");
                         fundo[id] -= input.nextDouble();
+                        System.out.print("Taxa descontada do salário\n");
                     }
                     else
                         System.out.print("Você nao pertence ao sindicato\n");

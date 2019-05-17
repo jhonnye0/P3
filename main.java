@@ -4,6 +4,7 @@ public class Main
 {
     private static int DIA = 1;
     private static int HORA = 0;
+    static Scanner input = new Scanner(System.in);
 
     static String[] names = new String[100];
     static String[] adress = new String[100];
@@ -22,7 +23,6 @@ public class Main
 
     public static void main(String[] args)
     {
-        Scanner input = new Scanner(System.in);
         while(true)
         {
             System.out.println("\n------------------------------\n");
@@ -95,11 +95,13 @@ public class Main
                     {
                         System.out.print("Insira a taxa de serviço:\n");
                         fundo[id] -= input.nextDouble();
-                        System.out.print("Taxa descontada do salário\n");
                     }
                     else
                         System.out.print("Você nao pertence ao sindicato\n");
                     break;
+                case 6:
+                    System.out.println("Digite o ID do empregado que deseja modificar:\n");
+                    update(input.nextInt());
 
                 default:
                     System.out.print("Digite novamente..\n");
@@ -192,7 +194,7 @@ public class Main
 
     private static void remove(int id)
     {
-        if(names[id] == null) 
+        if(names[id] == null)
         {
             System.out.println("O empregado não está registrado\n");
             return;
@@ -219,5 +221,129 @@ public class Main
         paymentWeekDay[id] = 0;
         fundo[id] = 0;
         System.out.println("Empregado removido com sucesso!");
+    }
+
+    private static void update(int id)
+    {
+        while(true)
+        {
+            System.out.println("Digite o número da informação a qual deseja atualizar:\n\n" +
+                    "0. Retornar\n" +
+                    "1. Nome\n" +
+                    "2. Endereço\n" +
+                    "3. Tipo\n" +
+                    "4. Atributos\n" +
+                    "5. Método de pagamento\n" +
+                    "6. Participar do sindicato\n");
+
+            int operation = input.nextInt();
+            input.nextLine();
+            if(operation == 0)
+            {
+                System.out.println("Finalizado.\n");
+                break;
+            }
+
+            switch(operation)
+            {
+                case 1:
+                    System.out.printf("Nome atual: %s\n", names[id]);
+                    System.out.println("Digite o novo nome:");
+                    names[id] = input.nextLine();
+                    System.out.println("Atualizado.\n");
+                    break;
+                case 2:
+                    System.out.printf("Endereço atual: %s\n", adress[id]);
+                    System.out.println("Digite o novo endereço:");
+                    adress[id] = input.nextLine();
+                    System.out.println("Atualizado.\n");
+                    break;
+                case 3:
+                    System.out.print("Tipo atual: ");
+                    if(types[id] == 1) System.out.print("Horista\n");
+                    else if(types[id] == 2) System.out.print("Comissionado\n");
+                    else System.out.print("Assalariado\n");
+                    System.out.println("Digite o número do tipo que deseja:\n" +
+                            "1. Horista\n" +
+                            "2. Comissionado\n" +
+                            "3. Assalariado\n");
+                    types[id] = input.nextInt();
+                    System.out.println("Atualizado.\n");
+                    break;
+                case 4:
+                    if(types[id] == 1)
+                    {
+                        System.out.println("Gostaria de mudar o dia de pagamento da semana?\n" +
+                                "y - sim\n" +
+                                "n - não");
+                        if(input.nextLine().intern() == "y")
+                        {
+                            System.out.println("Qual dia deseja?\n\n" +
+                                    "1. domingo\n" +
+                                    "2. segunda\n" +
+                                    "3. terça\n" +
+                                    "4. quarta\n" +
+                                    "5. quinta\n" +
+                                    "6. sexta\n" +
+                                    "7. sabado\n");
+                            int day = input.nextInt();
+                            input.nextLine();
+                            if(day > 0 && day < 8)
+                                paymentWeekDay[id] = day;
+
+                            System.out.println("Seu pagamento é efetuado uma vez por semana.\n");
+                        }
+                    }
+                    else if(types[id] == 2)
+                    {
+                        System.out.println("Qual dia deseja?\n\n" +
+                                "1. domingo\n" +
+                                "2. segunda\n" +
+                                "3. terça\n" +
+                                "4. quarta\n" +
+                                "5. quinta\n" +
+                                "6. sexta\n" +
+                                "7. sabado\n");
+                        int day = input.nextInt();
+                        input.nextLine();
+                        if(day > 0 && day < 8)
+                            paymentWeekDay[id] = day;
+
+                        System.out.println("Seu pagamento é efetuado uma vez a cada x semanas.\n");
+                        System.out.println("Digite o x que deseja:\n");
+                        frequence[id] = input.nextInt();
+                        input.nextLine();
+                    }
+                    else if(types[id] == 3)
+                    {
+                        System.out.println("Seu pagamento é efetuado uma vez por mês.\n");
+                        System.out.println("Qual dia deseja?\n");
+                        frequence[id] = input.nextInt();
+                        input.nextLine();
+                    }
+                    System.out.println("Atualizado.\n");
+                    break;
+                case 5:
+                    System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
+                            "1. Cheque pelos correios\n" +
+                            "2. Cheque em mãos\n" +
+                            "3. Depósito na conta bancária\n");
+                    paymentMethod[id] = input.nextInt();
+                    System.out.println("Atualizado.\n");
+                    break;
+                case 6:
+                    System.out.print("\nGostaria de participar do sindicato?\n" +
+                            "y - sim\n" +
+                            "n - não\n");
+                    if(input.nextLine() == "y")
+                        synd[id] = true;
+                    else
+                        synd[id] = false;
+                    break;
+                default:
+                    System.out.println("Digite novamente o número.");
+                    break;
+            }
+        }
     }
 }

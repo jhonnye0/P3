@@ -4,6 +4,7 @@ public class Main
 {
     private static int DIA = 1;
     private static int HORA = 0;
+    private static int SEMANA = 0;
     static Scanner input = new Scanner(System.in);
 
     static String[] names = new String[100];
@@ -19,9 +20,11 @@ public class Main
     static int[] payday = new int[100];
     static int[] frequence = new int[100];
     static int[] paymentWeekDay = new int[100];
+    static int[] SM = new int[100];
     static int[] comPercentual = new int[100];
-    static int[] syndTAx = new int[100];
+    static int[] syndTax = new int[100];
     static double[] fundo = new double[100];
+    static int[] daysM = new int[31];
 
     public static void main(String[] args)
     {
@@ -45,14 +48,14 @@ public class Main
                             "6. Criar nova agenda de pagamento\n" +
                             "7. Passar as horas\n" +
                             "8. Passar os dias\n" +
-                            "9. Checar os empregados registrador na empresa\n");
+                            "9. Checar os empregados registrados na empresa\n");
                     int operation = input.nextInt();
                     input.nextLine();
                     int id;
                     if(operation == 0) break;
                     switch(operation)
                     {
-                        case 1: // Adcionar novo empregado
+                        case 1:
                             int i;
                             for(i = 0; i<100; i++)
                             {
@@ -86,9 +89,85 @@ public class Main
                             update(input.nextInt());
                             break;
                         case 5:
+                            System.out.println("------------------------------------");
                             System.out.println("Empregados que devem ser pagos hoje:\n");
+                            int[] topay = new int[100];
+                            int cont = 0;
+                            for(i = 0; i<100; i++)
+                            {
+                                if(names[i] != null)
+                                {
+                                    if(SM[i] == 1)
+                                    {
+                                        if(payday[i] == DIA)
+                                        {
+                                            topay[cont++] = i;
+                                            System.out.printf("Empregado de ID-[%d]:\n",i);
+                                            System.out.printf("Nome: %s\n", names[i]);
+                                            System.out.printf("Endereço: %s\n", adress[i]);
+                                            System.out.print("Tipo: ");
+                                            if(types[i] == 1)
+                                                System.out.println("Horista");
+                                            else if(types[i] == 2)
+                                                System.out.println("Comissionado");
+                                            else
+                                                System.out.println("Assalariado");
+                                            System.out.printf("Salário: %f\n", salary[i]);
+                                            System.out.printf("Filiação ao sindicato: %s\n", synd[i] ? "true" : "false");
+                                            if(synd[i] == true) System.out.printf("ID no sindicato: %d\n", synID[i]);
+                                            System.out.print("Método de pagamento: ");
+                                            if(paymentMethod[i] == 1)
+                                                System.out.println("Cheque pelos correios");
+                                            else if(paymentMethod[i] == 2)
+                                                System.out.println("Cheque em mãos");
+                                            else
+                                                System.out.println("Depósito em conta bancária");
+                                            System.out.printf("Salário total: %f\n", fundo[i]);
+                                            System.out.println("------------------------------------");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if(paymentWeekDay[i] == DIA%7)
+                                        {
+                                            if(SEMANA%frequence[i] == 0)
+                                            {
+                                                topay[cont++] = i;
+
+                                                System.out.printf("Empregado de ID-[%d]:\n",i);
+                                                System.out.printf("Nome: %s\n", names[i]);
+                                                System.out.printf("Endereço: %s\n", adress[i]);
+                                                System.out.print("Tipo: ");
+                                                if(types[i] == 1)
+                                                    System.out.println("Horista");
+                                                else if(types[i] == 2)
+                                                    System.out.println("Comissionado");
+                                                else
+                                                    System.out.println("Assalariado");
+                                                System.out.printf("Salário: %f\n", salary[i]);
+                                                System.out.printf("Filiação ao sindicato: %s\n", synd[i] ? "true" : "false");
+                                                if(synd[i] == true) System.out.printf("ID no sindicato: %d\n", synID[i]);
+                                                System.out.print("Método de pagamento: ");
+                                                if(paymentMethod[i] == 1)
+                                                    System.out.println("Cheque pelos correios");
+                                                else if(paymentMethod[i] == 2)
+                                                    System.out.println("Cheque em mãos");
+                                                else
+                                                    System.out.println("Depósito em conta bancária");
+                                                System.out.printf("Salário total: %f\n", fundo[i]);
+                                                System.out.println("------------------------------------");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             break;
                         case 6:
+                            System.out.print("Deseja criar uma agenda mensal ou semanal?\n");
+                            if(input.nextLine().intern() == "mensal")
+                            {
+
+                            }
                             break;
                         case 7:
                             System.out.println("Deseja avançar quantas horas?");
@@ -98,7 +177,10 @@ public class Main
                             break;
                         case 8:
                             System.out.println("Deseja avançar quantos dias?");
-                            DIA += input.nextInt();
+                            int qt = input.nextInt();
+                            DIA += qt;
+                            SEMANA = qt/7;
+                            System.out.println(SEMANA);
                             DIA %= 31;
                             if(DIA == 0) DIA++;
                             System.out.printf("Dia atual: %d\n", DIA);
@@ -257,7 +339,8 @@ public class Main
         }
         else
         {
-            payday[id] = 31;
+            payday[id] = 1;
+            SM[id] = 1;
             System.out.print("Pagamento 1 vez por mês\n" +
                     "Dia de pagamento no último dia do mês\n" +
                     "Dia: 30\n" +
@@ -274,6 +357,8 @@ public class Main
         System.out.print("Qual o salário do empregado?\n");
         salary[id] = input.nextDouble();
         input.nextLine();
+
+        if(types[id] == 3) fundo[id] = salary[id];
 
         System.out.println("\n------------------------------\n");
         System.out.printf("\nID do empregado na empresa é: |%d|\n", id);
@@ -296,6 +381,7 @@ public class Main
             }
             synID[id] = i;
             System.out.print("A taxa sindical no valor (default) de 10 reais será descontado do seu salário ao fim do mês\n");
+            syndTax[id] = 10;
             System.out.printf("Seu ID no sindicato é: |%d|\n", synID[id]);
         }
         else
@@ -345,11 +431,10 @@ public class Main
                     "1. Nome\n" +
                     "2. Endereço\n" +
                     "3. Tipo\n" +
-                    "4. Atributos\n" +
-                    "5. Método de pagamento\n" +
-                    "6. Participar do sindicato\n" +
-                    "7. Salário\n" +
-                    "8. ");
+                    "4. Método de pagamento\n" +
+                    "5. Participação no sindicato\n" +
+                    "6. Taxa sindical\n" +
+                    "7. ID sindicato\n");
 
             int operation = input.nextInt();
             input.nextLine();
@@ -386,59 +471,6 @@ public class Main
                     System.out.println("Atualizado.\n");
                     break;
                 case 4:
-                    if(types[id] == 1)
-                    {
-                        System.out.println("Gostaria de mudar o dia de pagamento da semana?\n" +
-                                "y - sim\n" +
-                                "n - não");
-                        if(input.nextLine().intern() == "y")
-                        {
-                            System.out.println("Qual dia deseja?\n\n" +
-                                    "1. domingo\n" +
-                                    "2. segunda\n" +
-                                    "3. terça\n" +
-                                    "4. quarta\n" +
-                                    "5. quinta\n" +
-                                    "6. sexta\n" +
-                                    "7. sabado\n");
-                            int day = input.nextInt();
-                            input.nextLine();
-                            if(day > 0 && day < 8)
-                                paymentWeekDay[id] = day;
-
-                            System.out.println("Seu pagamento é efetuado uma vez por semana.\n");
-                        }
-                    }
-                    else if(types[id] == 2)
-                    {
-                        System.out.println("Qual dia deseja?\n\n" +
-                                "1. domingo\n" +
-                                "2. segunda\n" +
-                                "3. terça\n" +
-                                "4. quarta\n" +
-                                "5. quinta\n" +
-                                "6. sexta\n" +
-                                "7. sabado\n");
-                        int day = input.nextInt();
-                        input.nextLine();
-                        if(day > 0 && day < 8)
-                            paymentWeekDay[id] = day;
-
-                        System.out.println("Seu pagamento é efetuado uma vez a cada x semanas.\n");
-                        System.out.println("Digite o x que deseja:\n");
-                        frequence[id] = input.nextInt();
-                        input.nextLine();
-                    }
-                    else if(types[id] == 3)
-                    {
-                        System.out.println("Seu pagamento é efetuado uma vez por mês.\n");
-                        System.out.println("Qual dia deseja?\n");
-                        frequence[id] = input.nextInt();
-                        input.nextLine();
-                    }
-                    System.out.println("Atualizado.\n");
-                    break;
-                case 5:
                     System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
                             "1. Cheque pelos correios\n" +
                             "2. Cheque em mãos\n" +
@@ -446,7 +478,7 @@ public class Main
                     paymentMethod[id] = input.nextInt();
                     System.out.println("Atualizado.\n");
                     break;
-                case 6:
+                case 5:
                     System.out.print("\nGostaria de participar do sindicato?\n" +
                             "y - sim\n" +
                             "n - não\n");
@@ -456,13 +488,18 @@ public class Main
                         synd[id] = false;
                     System.out.println("Atualizado.\n");
                     break;
-                case 7:
-                    System.out.print("Salário atual: ");
-                    System.out.println(salary[id]);
-                    System.out.print("Qual o novo salário?\n");
-                    salary[id] = input.nextDouble();
-                    System.out.println("Atualizado.\n");
+                case 6:
+                    System.out.println("Qual a nova taxa sindical?");
+                    syndTax[id] = input.nextInt();
                     break;
+                case 7:
+                    System.out.println("Buscaremos um novo ID para você");
+                    int i = Syndicato[id];
+                    for(i -= 1; i>= 0 ; i--)
+                    {
+                        if(Syndicato[i] == 0) break;
+                    }
+                    if(i >= 0) synID[id] = i;
                 default:
                     System.out.println("Digite novamente o número.");
                     break;

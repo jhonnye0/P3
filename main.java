@@ -13,7 +13,7 @@ public class Main
     static double[] salary = new double[100];
     static int[] Syndicato = new int[1000];
     static boolean[] synd = new boolean[100];
-    static double[][] vendas = new double[100][31];
+    static double[][] vendas = new double[100][32];
     static int[] ponto = new int[100];
     static int[] paymentMethod = new int[100];
     static int[] synID = new int[100];
@@ -24,7 +24,7 @@ public class Main
     static int[] comPercentual = new int[100];
     static int[] syndTax = new int[100];
     static double[] fundo = new double[100];
-    static int[] daysM = new int[31];
+    static int[] daysM = new int[32];
     static int[][] semanal = new int[8][4];
 
     public static void main(String[] args)
@@ -107,6 +107,7 @@ public class Main
                                         if(payday[i] == DIA)
                                         {
                                             topay[cont++] = i;
+                                            calcCom(i);
                                             PrintEmployee(i);
                                         }
                                     }
@@ -117,11 +118,18 @@ public class Main
                                             if(SEMANA%frequence[i] == 0)
                                             {
                                                 topay[cont++] = i;
+                                                calcCom(i);
                                                 PrintEmployee(i);
                                             }
                                         }
                                     }
                                 }
+                            }
+                            for(i = 0; i<100; i++)
+                            {
+                                id = topay[i];
+                                if(types[id] == 1) fundo[id] = 0;
+                                else if(types[id] == 2) fundo[id] = salary[id];
                             }
                             break;
                         case 6:
@@ -220,7 +228,7 @@ public class Main
                     System.out.println("\n------------------------------\n");
                     System.out.println("Digite a operação que deseja:\n\n" +
                             "0. Finalizar\n" +
-                            "1. Registrar venda\n" +
+                            "1. Registro de vendas\n" +
                             "2. Marcar ponto\n" +
                             "3. Alterar agenda de pagamento\n");
                     int operation = input.nextInt();
@@ -230,11 +238,26 @@ public class Main
                     switch (operation)
                     {
                         case 1:
+                            System.out.println("\n------------------------------\n");
                             System.out.print("Digite seu ID:\n");
                             id = input.nextInt();
-                            System.out.print("Digite o valor da venda:\n");
-                            vendas[id][DIA] = input.nextDouble();
-                            System.out.println("Venda registrada com sucesso");
+                            System.out.println("\nO que deseja?:\n" +
+                                    "1. Registrar Venda\n" +
+                                    "2. Acessar vendas efetuadas\n");
+                            if(input.nextInt() == 1)
+                            {
+                                System.out.print("Digite o valor da venda:\n");
+                                vendas[id][DIA] += input.nextDouble();
+                                System.out.println("Venda registrada com sucesso");
+                            }
+                            else
+                            {
+                                for (i = 1; i<=DIA; i++)
+                                {
+                                    System.out.printf("DIA : %d\n" +
+                                            "Valor total: %f\n", i, vendas[id][i]);
+                                }
+                            }
                             break;
                         case 2:
                             System.out.print("Digite seu ID:\n");
@@ -273,7 +296,7 @@ public class Main
                             {
                                 System.out.println("\n------------------------------\n");
                                 System.out.print("Dias disponíveis para as agendas mensais:\n");
-                                for (i = 0; i<31; i++)
+                                for (i = 1; i<32; i++)
                                 {
                                     if(daysM[i] == 1)
                                     {
@@ -341,6 +364,8 @@ public class Main
             System.out.println("Comissionado");
         else
             System.out.println("Assalariado");
+        if(types[i] == 2)
+            System.out.printf("Percentual de Comissão : %d\n", comPercentual[i]);
         System.out.printf("Salário: %f\n", salary[i]);
         System.out.printf("Filiação ao sindicato: %s\n", synd[i] ? "true" : "false");
         if(synd[i]) System.out.printf("ID no sindicato: %d\n", synID[i]);
@@ -363,7 +388,17 @@ public class Main
         System.out.printf("Salário total: %f\n", fundo[i]);
         System.out.println("------------------------------------");
     }
-
+    
+    private static void calcCom(int i)
+    {
+        if(types[i] == 2) {
+            double comission = 0;
+            int j;
+            for (j = 1; j< 32; j++) comission += vendas[i][j];
+            fundo[i] += (comission/100)*comPercentual[i];
+        }
+    }
+    
     private static void add(int id)
     {
         Scanner input = new Scanner(System.in);
@@ -399,17 +434,17 @@ public class Main
         {
             frequence[id] = 2;
             paymentWeekDay[id] = 6;
-            System.out.println("Pagamento 1 vez por semana\n" +
+            System.out.println("Pagamento 2 vezes por semana\n" +
                     "Dia de pagamento na sexta-feira.\n\n" +
                     "Pode ser alterado futuramente..\n");
         }
         else
         {
-            payday[id] = 1;
+            payday[id] = 31;
             SM[id] = 1;
             System.out.print("Pagamento 1 vez por mês\n" +
                     "Dia de pagamento no último dia do mês\n" +
-                    "Dia: 30\n" +
+                    "Dia: 31\n" +
                     "Pode ser alterado futuramente..\n");
         }
 
@@ -424,7 +459,7 @@ public class Main
         salary[id] = input.nextDouble();
         input.nextLine();
 
-        if(types[id] == 3) fundo[id] = salary[id];
+        if(types[id] == 3 || types[id] == 2) fundo[id] = salary[id];
 
         System.out.println("\n------------------------------\n");
         System.out.printf("\nID do empregado na empresa é: |%d|\n", id);

@@ -7,6 +7,9 @@ public class Main
     private static int SEMANA = 0;
     static Scanner input = new Scanner(System.in);
 
+    static int state_cont = 0;
+    static int redo_cont = 0;
+
     static String[] names = new String[100];
     static String[] adress = new String[100];
     static int[] types = new int[100];
@@ -22,11 +25,11 @@ public class Main
     static int[] paymentWeekDay = new int[100];
     static int[] SM = new int[100]; //(salario mensal)
     static int[] comPercentual = new int[100];
-    static int[] syndTax = new int[100];
+    static double[] syndTax = new double[100];
     static double[] fundo = new double[100];
     static int[] daysM = new int[32];
     static int[][] semanal = new int[8][4];
-    
+
     //-----------------------------------------------------
     static String[][] namesUN = new String[100][1000];
     static String[][] adressUN = new String[100][1000];
@@ -37,24 +40,22 @@ public class Main
     static double[][][] vendasUN = new double[100][32][1000];
     static int[][] pontoUN = new int[100][1000];
     static int[][] paymentMethodUN = new int[100][1000];
-    static int[][] synIDUN = new int[100];
-    static int[][] paydayUN = new int[100];
-    static int[][] frequenceUN = new int[100];
-    static int[][] paymentWeekDayUN = new int[100];
-    static int[][] SM = new int[100]; //(salario mensal)
-    static int[][] comPercentual = new int[100];
-    static int[][] syndTax = new int[100];
-    static double[][] fundo = new double[100];
-    static int[][] daysM = new int[32];
-    static int[][][] semanal = new int[8][4];
+    static int[][] synIDUN = new int[100][1000];
+    static int[][] paydayUN = new int[100][1000];
+    static int[][] frequenceUN = new int[100][1000];
+    static int[][] paymentWeekDayUN = new int[100][1000];
+    static int[][] SM_UN = new int[100][1000];
+    static int[][] comPercentualUN = new int[100][1000];
+    static double[][] syndTaxUN = new double[100][1000];
+    static double[][] fundoUN = new double[100][1000];
 
     public static void main(String[] args)
     {
         while(true)
         {
             System.out.println("\n------------------------------\n");
-            System.out.println("\nModo de acesso:\n" +
-                    "0. Finalizar\n" +
+            System.out.println("\nModo de acesso: (Digite o número)\n" +
+                    "0. Encerrar acesso\n" +
                     "1. Admin\n" +
                     "2. Empregado\n");
             int o = input.nextInt();
@@ -63,9 +64,8 @@ public class Main
             {
                 while(true)
                 {
-                    int last_op = operation;
                     System.out.println("\n------------------------------\n");
-                    System.out.println("Digite a operação que deseja:\n\n" +
+                    System.out.println("Digite o número da operação que deseja:\n\n" +
                             "0. Finalizar\n" +
                             "1. Adcionar empregado\n" +
                             "2. Remover empregado\n" +
@@ -77,7 +77,8 @@ public class Main
                             "8. Passar os dias/ Checar dia\n" +
                             "9. Checar semana\n" +
                             "10. Checar os empregados registrados na empresa\n" +
-                            "11. Desfazer operação\n");
+                            "11. Desfazer operação\n" +
+                            "12. Refazer operação\n");
                     operation = input.nextInt();
                     input.nextLine();
                     int id;
@@ -91,11 +92,13 @@ public class Main
                                 if(names[i] == null) break;
                             }
                             add(i);
+                            saveState_UNDO();
                             break;
                         case 2:
                             System.out.print("Digite o ID do empregado que deseja remover:\n");
                             id = input.nextInt();
                             remove(id);
+                            saveState_UNDO();
                             break;
                         case 3:
                             System.out.print("Digite seu ID:\n");
@@ -112,10 +115,12 @@ public class Main
                             }
                             else
                                 System.out.print("Você nao pertence ao sindicato\n");
+                            saveState_UNDO();
                             break;
                         case 4:
                             System.out.println("Digite o ID do empregado que deseja modificar:\n");
                             update(input.nextInt());
+                            saveState_UNDO();
                             break;
                         case 5:
                             System.out.println("------------------------------------");
@@ -158,6 +163,7 @@ public class Main
                                 else if(types[id] == 2) fundo[id] = salary[id];
                             }
                             System.out.println("Empregados pagos com sucesso!\n");
+                            saveState_UNDO();
                             break;
                         case 6:
                             System.out.print("1 - Mensal / 2 - Semanal\n");
@@ -243,13 +249,28 @@ public class Main
                             }
                             break;
                         case 11:
-                            System.out.print("A última operação foi: ");
-                            switch (last_op)
+                            System.out.print("Deseja desfazer a última operação?\n" +
+                                    "y - yes\n" +
+                                    "n - no\n");
+                            if(input.nextLine().intern() == "y")
                             {
-                                case 1: System.out.print("Adcionar empregado"); break;
-                                case 2: System.out.print("Remover empregado"); break;
-                                case 3: System.out.print("Lançar taxa de serviço"); break;
+                                UNDO();
                             }
+                            System.out.print("Operação desfeita com sucesso!\n");
+                            break;
+                        case 12:
+                            System.out.print("Deseja refazer a última operação?\n" +
+                                    "y - yes\n" +
+                                    "n - no\n");
+                            if(input.nextLine().intern() == "y")
+                            {
+                                REDO();
+                            }
+                            System.out.print("Operação refeita com sucesso!\n");
+                        case 999:
+                            System.out.println(state_cont);
+                            System.out.println(redo_cont);
+                            break;
                         default:
                             System.out.print("Digite novamente..\n");
                             break;
@@ -294,6 +315,7 @@ public class Main
                                             "Valor total: %f\n", i, vendas[id][i]);
                                 }
                             }
+                            saveState_UNDO();
                             break;
                         case 2:
                             System.out.print("Digite seu ID:\n");
@@ -320,6 +342,7 @@ public class Main
                                 }
                             }
                             System.out.println("Horário registrado!");
+                            saveState_UNDO();
                             break;
                         case 3:
                             System.out.println("\n------------------------------\n");
@@ -394,7 +417,91 @@ public class Main
         int i,j,k;
         for (i=0; i < 100; i++)
         {
-            
+            namesUN[i][state_cont] = names[i];
+            adressUN[i][state_cont] = adress[i];
+            typesUN[i][state_cont] = types[i];
+            salaryUN[i][state_cont] = salary[i];
+            SyndicatoUN[i][state_cont] = Syndicato[i];
+            syndUN[i][state_cont] = synd[i];
+
+            for(j = 0; j <32 ; j++) vendasUN[i][j][state_cont] = vendas[i][j];
+
+            pontoUN[i][state_cont] = ponto[i];
+            paymentMethodUN[i][state_cont] = paymentMethod[i];
+            synIDUN[i][state_cont] = synID[i];
+            paydayUN[i][state_cont] = payday[i];
+            frequenceUN[i][state_cont] = frequence[i];
+            paymentWeekDayUN[i][state_cont] = paymentWeekDay[i];
+            SM_UN[i][state_cont] = SM[i];
+            comPercentualUN[i][state_cont] = comPercentual[i];
+            syndTaxUN[i][state_cont] = syndTax[i];
+            fundoUN[i][state_cont] = fundo[i];
+        }
+        redo_cont = state_cont;
+        state_cont = (state_cont+1)%1000;
+    }
+
+    private static void UNDO()
+    {
+        int i,j,k;
+        redo_cont--;
+        k = (redo_cont);
+        if(k < 0) k+=1000;
+
+        for (i=0; i < 100; i++)
+        {
+            names[i] = namesUN[i][k];
+            adress[i] = adressUN[i][k];
+            types[i] = typesUN[i][k];
+            salary[i] = salaryUN[i][k];
+            Syndicato[i] = SyndicatoUN[i][k];
+            synd[i] = syndUN[i][k];
+
+            for(j = 0; j <32 ; j++) vendas[i][j] = vendasUN[i][j][k];
+
+            ponto[i] = pontoUN[i][k];
+            paymentMethod[i] = paymentMethodUN[i][k];
+            synID[i] = synIDUN[i][k];
+            payday[i] = paydayUN[i][k];
+            frequence[i] = frequenceUN[i][k];
+            paymentWeekDay[i] = paymentWeekDayUN[i][k];
+            SM[i] = SM_UN[i][k];
+            comPercentual[i] = comPercentualUN[i][k];
+            syndTax[i] = syndTaxUN[i][k];
+            fundo[i] = fundoUN[i][k];
+        }
+    }
+
+    private static  void REDO()
+    {
+        int i,j,k;
+        if(redo_cont == state_cont) System.out.print("Não há mais operações a serem desfeitas..\n");
+        else {
+            redo_cont++;
+            k = (redo_cont)%1000;
+
+            for (i = 0; i < 100; i++)
+            {
+                names[i] = namesUN[i][k];
+                adress[i] = adressUN[i][k];
+                types[i] = typesUN[i][k];
+                salary[i] = salaryUN[i][k];
+                Syndicato[i] = SyndicatoUN[i][k];
+                synd[i] = syndUN[i][k];
+
+                for (j = 0; j < 32; j++) vendas[i][j] = vendasUN[i][j][k];
+
+                ponto[i] = pontoUN[i][k];
+                paymentMethod[i] = paymentMethodUN[i][k];
+                synID[i] = synIDUN[i][k];
+                payday[i] = paydayUN[i][k];
+                frequence[i] = frequenceUN[i][k];
+                paymentWeekDay[i] = paymentWeekDayUN[i][k];
+                SM[i] = SM_UN[i][k];
+                comPercentual[i] = comPercentualUN[i][k];
+                syndTax[i] = syndTaxUN[i][k];
+                fundo[i] = fundoUN[i][k];
+            }
         }
     }
 
@@ -486,7 +593,7 @@ public class Main
         else
         {
             payday[id] = 31;
-            SM[id] = 1;
+            SM[id] = 1; // recebe mensalmente
             System.out.print("Pagamento 1 vez por mês\n" +
                     "Dia de pagamento no último dia do mês\n" +
                     "Dia: 31\n" +
@@ -526,7 +633,7 @@ public class Main
                 }
             }
             synID[id] = i;
-            System.out.print("A taxa sindical no valor (default) de 10 reais será descontado do seu salário ao fim do mês\n");
+            System.out.print("A taxa sindical no valor de 10 reais será descontado do seu salário ao fim do mês\n");
             syndTax[id] = 10;
             System.out.printf("Seu ID no sindicato é: |%d|\n", synID[id]);
         }
@@ -617,7 +724,7 @@ public class Main
                     System.out.println("Atualizado.\n");
                     break;
                 case 4:
-                    System.out.print("Qual o método de pagamento deseja? (O método pode ser alterado)\n" +
+                    System.out.print("Qual o novo método de pagamento que deseja?\n" +
                             "1. Cheque pelos correios\n" +
                             "2. Cheque em mãos\n" +
                             "3. Depósito na conta bancária\n");
@@ -636,7 +743,7 @@ public class Main
                     break;
                 case 6:
                     System.out.println("Qual a nova taxa sindical?");
-                    syndTax[id] = input.nextInt();
+                    syndTax[id] = input.nextDouble();
                     break;
                 case 7:
                     System.out.println("Buscaremos um novo ID para você");

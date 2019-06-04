@@ -445,8 +445,8 @@ public class Main
     {
         int i,j,k;
         redo_cont--;
+        if(redo_cont < 0) redo_cont +=1000;
         k = (redo_cont);
-        if(k < 0) k+=1000;
 
         for (i=0; i < 100; i++)
         {
